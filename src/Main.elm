@@ -3,7 +3,7 @@ module Main exposing (..)
 import Browser
 import Html exposing (Html, button, input, div, text, li, ul)
 import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (placeholder, value, class)
+import Html.Attributes exposing (placeholder, value, class, classList)
 import Random
 
 -- MAIN
@@ -39,19 +39,20 @@ init _ =
 
 type Msg
   = Roll
-    | Add Int
+    | Create Int
     | Content String
     | Delete Int
+    | Update Int Bool
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Roll ->
       ( model
-      , Random.generate Add (Random.int 1 999)
+      , Random.generate Create (Random.int 1 999)
       )
 
-    Add id ->
+    Create id ->
       ( { model | todos = Todo model.content False id :: model.todos }
       , Cmd.none
       )
@@ -65,6 +66,20 @@ update msg model =
       ( { model | todos = List.filter (\todo -> todo.id /= id) model.todos }
       , Cmd.none
       )
+
+    Update id done ->
+      let
+        updateTodo todo =
+          if todo.id == id then
+            { todo | done = done }
+          else
+            todo
+
+        todos = List.map updateTodo model.todos
+      in
+        ( { model | todos = todos  }
+        , Cmd.none
+        )
 
 
 
@@ -103,7 +118,13 @@ viewList todos =
 
 viewTodo : Todo -> Html Msg
 viewTodo todo =
-  li [ class "list-item" ] [
+  li [
+    classList [
+      ("list-item", True),
+      ("done", todo.done)
+    ],
+    onClick (Update todo.id (not todo.done))
+  ] [
     text todo.text
     , button [ class "delete-button", onClick (Delete todo.id) ] [ text "x" ]
   ]

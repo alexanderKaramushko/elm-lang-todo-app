@@ -31,8 +31,13 @@ img {
 
 .list-item {
   margin: 10px 0;
+  user-select: none;
 }
 
 .delete-button {
   margin-left: 5px
+}
+
+.done {
+  text-decoration: line-through;
 }
