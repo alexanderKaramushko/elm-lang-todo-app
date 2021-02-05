@@ -3,7 +3,7 @@ module Main exposing (..)
 import Browser
 import Html exposing (Html, button, input, div, text, li, ul)
 import Html.Events exposing (onClick, onInput)
-import Html.Attributes exposing (placeholder, value)
+import Html.Attributes exposing (placeholder, value, class)
 import Random
 
 -- MAIN
@@ -41,6 +41,7 @@ type Msg
   = Roll
     | Add Int
     | Content String
+    | Delete Int
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -57,6 +58,11 @@ update msg model =
 
     Content content ->
       ( { model | content = content}
+      , Cmd.none
+      )
+
+    Delete id ->
+      ( { model | todos = List.filter (\todo -> todo.id /= id) model.todos }
       , Cmd.none
       )
 
@@ -85,18 +91,19 @@ view model =
     ]
     , div [] [
         button [ onClick Roll ] [ text "Add todo" ]
-      , button [] [ text "Delete todo" ]
-      , button [] [ text "Complete todo" ]
       , div [] [
           viewList model.todos
         ]
     ]
   ]
 
-viewList : List Todo -> Html msg
+viewList : List Todo -> Html Msg
 viewList todos =
-  ul [] (List.map viewTodo todos)
+  ul [ class "list" ] (List.map viewTodo todos)
 
-viewTodo : Todo -> Html msg
+viewTodo : Todo -> Html Msg
 viewTodo todo =
-  li [] [ text todo.text ]
+  li [ class "list-item" ] [
+    text todo.text
+    , button [ class "delete-button", onClick (Delete todo.id) ] [ text "x" ]
+  ]

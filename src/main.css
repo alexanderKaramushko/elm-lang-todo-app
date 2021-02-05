@@ -25,6 +25,14 @@ img {
   max-width: 200px;
 }
 
-ul {
+.list {
   display: inline-block;
+}
+
+.list-item {
+  margin: 10px 0;
+}
+
+.delete-button {
+  margin-left: 5px
 }
