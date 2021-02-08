@@ -100,9 +100,6 @@ subscriptions _ =
 
 -- VIEW
 
-roll : Random.Generator Int
-roll =
-  Random.int 1 999
 
 view : Model -> Html Msg
 view model =
