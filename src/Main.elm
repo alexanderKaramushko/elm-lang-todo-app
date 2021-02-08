@@ -49,13 +49,19 @@ update msg model =
   case msg of
     Roll ->
       ( model
-      , Random.generate Create (Random.int 1 999)
+      , Random.generate Create (Random.int 1 9999)
       )
 
     Create id ->
-      ( { model | todos = Todo model.content False id :: model.todos }
-      , Cmd.none
-      )
+      if not (String.isEmpty (String.trim model.content)) then
+        ( { model | todos = Todo model.content False id :: model.todos }
+        , Cmd.none
+        )
+      else
+        (
+          model
+        , Cmd.none
+        )
 
     Content content ->
       ( { model | content = content}
